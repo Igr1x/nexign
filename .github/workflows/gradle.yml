@@ -24,18 +24,3 @@ jobs:
         run: chmod +x gradlew
       - name: Test
         run: gradle test --tests "*"
-
-      - name: Test Success
-        if: success()
-        uses: actions/github-script@0.2.0
-        with:
-          github-token: ${{ secrets.REP_TOKEN }}
-          script: |
-            const pull_number = "${{github.event.number}}"
-            await github.pulls.createReview({
-              ...context.repo,
-              pull_number,
-              body: "All tests passed.",
-              event: "APPROVE"
-            })
-   
