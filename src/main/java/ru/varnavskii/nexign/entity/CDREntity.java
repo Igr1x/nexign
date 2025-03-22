@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.varnavskii.nexign.converter.CallTypeConverter;
 import ru.varnavskii.nexign.enumeration.CallType;
 
 import java.time.LocalDateTime;
@@ -34,11 +33,11 @@ public class CDREntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = CALLING_COLUMN_NAME, nullable = false)
-    private SubscriberEntity callingNumber;
+    private SubscriberEntity calling;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = RECEIVING_COLUMN_NAME, nullable = false)
-    private SubscriberEntity receivingNumber;
+    private SubscriberEntity receiving;
 
     @Column(name = START_CALL_COLUMN_NAME, nullable = false)
     private LocalDateTime startCall;

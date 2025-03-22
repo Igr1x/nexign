@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface SubscriberService {
     List<SubscriberEntity> getAllSubscribers();
+
+    SubscriberEntity getSubscriberByIdOrThrowException(long id);
 }
