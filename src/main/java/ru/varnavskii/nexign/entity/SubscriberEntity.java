@@ -1,14 +1,10 @@
 package ru.varnavskii.nexign.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,6 +17,7 @@ public class SubscriberEntity {
     private static final String PHONE_NUMBER_COLUMN_NAME = "phone_number";
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = ID_COLUMN_NAME)
     private Long id;
 
