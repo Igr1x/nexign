@@ -1,17 +1,16 @@
-package ru.varnavskii.nexign;
+package ru.varnavskii.nexign.IT.service;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import org.springframework.test.context.ActiveProfiles;
 
 import ru.varnavskii.nexign.service.SubscriberService;
 
 @ActiveProfiles("test")
 @SpringBootTest
-public class SubscriberServiceTest {
+public class SubscriberServiceIT {
     @Autowired
     private SubscriberService subscriberService;
 
