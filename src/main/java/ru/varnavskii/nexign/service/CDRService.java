@@ -10,4 +10,6 @@ public interface CDRService {
     List<CDREntity> getCDRecordsByCallingId(int id);
 
     List<CDREntity> getCDRecordsByReceivingId(int id);
+
+    void saveAllRecords(List<CDREntity> records);
 }

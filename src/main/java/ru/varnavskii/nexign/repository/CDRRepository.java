@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface CDRRepository extends JpaRepository<CDREntity, Long> {
     List<CDREntity> findAllByCalling(SubscriberEntity calling);
+
     List<CDREntity> findAllByReceiving(SubscriberEntity receiving);
 }
