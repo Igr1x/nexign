@@ -1,0 +1,19 @@
+spring:
+    application:
+        name: nexign
+    h2:
+        console.enabled: true
+    datasource:
+        url: jdbc:h2:mem:nexign
+        username: nexign
+        password: nexign
+        driver-class-name: org.h2.Driver
+    jpa:
+        database-platform: org.hibernate.dialect.H2Dialect
+        show-sql: true
+        hibernate.ddl-auto: validate
+    flyway:
+        locations: classpath:db/migration
+server:
+    port: 8080
+    address: 0.0.0.0
