@@ -1,6 +1,7 @@
 package ru.varnavskii.nexign.repository.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.varnavskii.nexign.entity.CDREntity;
@@ -19,6 +20,12 @@ public class CDRJdbcRepositoryImpl implements CDRJdbcRepository {
             VALUES (?, ?, ?, ?, ?);
             """;
 
+    private final static String FIND_ALL_BY_SUBSCRIBER_ID_AND_MONTH = """
+            SELECT * FROM cdr
+            WHERE calling = ? OR receiving = ?
+                AND EXTRACT(MONTH FROM start_call) = ?;
+            """;
+
     private final JdbcTemplate jdbcTemplate;
 
     @Override
@@ -33,5 +40,12 @@ public class CDRJdbcRepositoryImpl implements CDRJdbcRepository {
                     ps.setTimestamp(4, Timestamp.valueOf(cdr.getStartCall()));
                     ps.setTimestamp(5, Timestamp.valueOf(cdr.getEndCall()));
                 });
+    }
+
+    @Override
+    public List<CDREntity> findAllBySubscriberIdAndMonth(long subscriberId, Integer month) {
+        return jdbcTemplate.query(FIND_ALL_BY_SUBSCRIBER_ID_AND_MONTH,
+                new Object[]{subscriberId, subscriberId, month},
+                new BeanPropertyRowMapper<>(CDREntity.class));
     }
 }
