@@ -44,5 +44,5 @@ public class SubscriberMapper {
     }
 
     private final Converter<String, String> phoneNumberConverter = source ->
-        source.getSource().replaceAll("\\+", "");
+        source.getSource().replaceAll("\\+", "").replaceFirst("7", "8");
 }
