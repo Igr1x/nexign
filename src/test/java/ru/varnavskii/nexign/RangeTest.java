@@ -2,7 +2,7 @@ package ru.varnavskii.nexign;
 
 import org.junit.jupiter.api.Test;
 
-import ru.varnavskii.nexign.util.Range;
+import ru.varnavskii.nexign.common.util.Range;
 
 import java.time.LocalDateTime;
 
