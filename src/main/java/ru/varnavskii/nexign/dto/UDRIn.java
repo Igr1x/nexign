@@ -1,9 +1,9 @@
 package ru.varnavskii.nexign.dto;
 
+import lombok.Getter;
+
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
-
-import lombok.Getter;
 
 @Getter
 public class UDRIn {

@@ -12,6 +12,9 @@ import ru.varnavskii.nexign.dto.UDRIn;
 import ru.varnavskii.nexign.dto.UDROut;
 import ru.varnavskii.nexign.service.UDRService;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping(value = "/udr", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
@@ -19,8 +22,14 @@ public class UDRController {
 
     private final UDRService udrService;
 
-    @PostMapping(value = "/getReport")
+    @PostMapping("/user")
     public UDROut getReport(@RequestBody UDRIn udrIn) {
         return udrService.getUDRReportForSubscriber(udrIn.getSubscriberId(), udrIn.getMonth());
+    }
+
+    @PostMapping("allUsers")
+    public List<UDROut> getReportForAllSubscriberByMonth(@RequestBody Map<String, String> body) {
+        var month = Integer.parseInt(body.get("month"));
+        return udrService.getUDRReportForAllSubscriberByMonth(month);
     }
 }
