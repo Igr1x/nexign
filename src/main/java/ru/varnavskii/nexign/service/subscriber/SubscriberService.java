@@ -10,4 +10,6 @@ public interface SubscriberService {
     SubscriberEntity getSubscriberByIdOrThrowException(long id);
 
     SubscriberEntity getSubscriberByPhoneOrThrowException(String phone);
+
+    SubscriberEntity createSubscriber(SubscriberEntity subscriber);
 }

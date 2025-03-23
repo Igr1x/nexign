@@ -36,7 +36,7 @@ public class CDRMapper {
         modelMapper.addMappings(new PropertyMap<CDRIn, CDREntity>() {
             @Override
             protected void configure() {
-                skip().setId(null); // ID пусть остается null
+                skip().setId(null);
                 using(callTypeConverter).map(source.getCallType(), destination.getCallType());
                 using(subscriberByPhoneConverter).map(source.getCallingPhone(), destination.getCalling());
                 using(subscriberByPhoneConverter).map(source.getReceivingPhone(), destination.getReceiving());
@@ -60,7 +60,7 @@ public class CDRMapper {
         };
 
     private final Converter<String, SubscriberEntity> subscriberByPhoneConverter = ctx -> {
-        var phone = ctx.getSource().replace("+", ""); // Убираем "+"
+        var phone = ctx.getSource().replace("\\+", "");
         return subscriberService.getSubscriberByPhoneOrThrowException(phone);
     };
 

@@ -1,12 +1,12 @@
 package ru.varnavskii.nexign.controller.cdr.dto.io;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
+@NoArgsConstructor
 public class CDROut {
     private Long id;
     private String callType;

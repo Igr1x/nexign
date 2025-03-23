@@ -34,4 +34,9 @@ public class SubscriberServiceImpl implements SubscriberService {
         return subscriberRepository.findByPhoneNumber(phone)
             .orElseThrow(() -> new EntityNotFoundException("Subscriber with phome " + phone + " not found"));
     }
+
+    @Override
+    public SubscriberEntity createSubscriber(SubscriberEntity subscriber) {
+        return subscriberRepository.save(subscriber);
+    }
 }
