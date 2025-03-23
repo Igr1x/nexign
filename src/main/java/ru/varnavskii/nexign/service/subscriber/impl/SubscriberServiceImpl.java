@@ -1,16 +1,13 @@
 package ru.varnavskii.nexign.service.subscriber.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
-
-import ru.varnavskii.nexign.repository.subscriber.entity.SubscriberEntity;
 import ru.varnavskii.nexign.repository.subscriber.SubscriberRepository;
+import ru.varnavskii.nexign.repository.subscriber.entity.SubscriberEntity;
 import ru.varnavskii.nexign.service.subscriber.SubscriberService;
 
 import java.util.List;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -26,13 +23,13 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public SubscriberEntity getSubscriberByIdOrThrowException(long id) {
         return subscriberRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Subscriber with id " + id + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Subscriber with id " + id + " not found"));
     }
 
     @Override
     public SubscriberEntity getSubscriberByPhoneOrThrowException(String phone) {
         return subscriberRepository.findByPhoneNumber(phone)
-            .orElseThrow(() -> new EntityNotFoundException("Subscriber with phome " + phone + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Subscriber with phome " + phone + " not found"));
     }
 
     @Override
