@@ -1,5 +1,7 @@
 package ru.varnavskii.nexign.controller.subscriber;
 
+import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.MediaType;
@@ -22,7 +24,7 @@ public class SubscriberController {
     private final SubscriberMapper subscriberMapper;
 
     @PostMapping
-    public SubscriberOut createSubscriber(@RequestBody SubscriberIn subscriberIn) {
+    public SubscriberOut createSubscriber(@Valid @RequestBody SubscriberIn subscriberIn) {
         var entity = subscriberMapper.toEntity(subscriberIn);
         entity = subscriberService.createSubscriber(entity);
         return subscriberMapper.toOut(entity);

@@ -1,5 +1,6 @@
 package ru.varnavskii.nexign.IT;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,8 @@ import ru.varnavskii.nexign.IT.annotation.IT;
 import ru.varnavskii.nexign.controller.subscriber.dto.io.SubscriberIn;
 import ru.varnavskii.nexign.controller.subscriber.dto.io.SubscriberOut;
 import ru.varnavskii.nexign.service.subscriber.SubscriberService;
+
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -55,6 +58,25 @@ public class SubscriberServiceIT {
 
         assertNotNull(responseBody.getId());
         assertEquals(phoneNumber.replaceAll("\\+", ""), responseBody.getPhoneNumber());
+    }
+
+    @Test
+    public void testCreateSubscriberWithIncorrectPhoneNumber() throws Exception {
+        var phoneNumber = "12423432429122345678";
+        var subscriberIn = SubscriberIn.builder()
+            .phoneNumber(phoneNumber)
+            .build();
+        String requestBody = objectMapper.writeValueAsString(subscriberIn);
+        var errors = mockMvc.perform(post(URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+        Map<String, String> errorMap = objectMapper.readValue(errors, new TypeReference<>() {});
+        var errorMsg = errorMap.get("phoneNumber");
+        assertEquals(SubscriberIn.INVALID_PHONE_NUMBER, errorMsg);
     }
 
 }
