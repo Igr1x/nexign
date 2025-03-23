@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import ru.varnavskii.nexign.IT.annotation.IT;
 import ru.varnavskii.nexign.service.CDRService;
+import ru.varnavskii.nexign.service.SubscriberService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,9 @@ public class CDRControllerIT {
 
     @Autowired
     private CDRService cdrService;
+
+    @Autowired
+    private SubscriberService subscriberService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -44,5 +48,8 @@ public class CDRControllerIT {
             .andExpect(status().isOk());
 
         assertEquals(countRecords, cdrService.getAllCDRecords().size());
+
+        var allUsers = subscriberService.getAllSubscribers();
+
     }
 }

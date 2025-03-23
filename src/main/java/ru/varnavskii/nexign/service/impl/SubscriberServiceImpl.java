@@ -28,4 +28,10 @@ public class SubscriberServiceImpl implements SubscriberService {
         return subscriberRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Subscriber with id " + id + " not found"));
     }
+
+    @Override
+    public SubscriberEntity getSubscriberByPhoneOrThrowException(String phone) {
+        return subscriberRepository.findByPhoneNumber(phone)
+            .orElseThrow(() -> new EntityNotFoundException("Subscriber with phome " + phone + " not found"));
+    }
 }

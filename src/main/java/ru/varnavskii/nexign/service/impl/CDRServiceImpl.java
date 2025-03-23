@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import ru.varnavskii.nexign.entity.CDREntity;
 import ru.varnavskii.nexign.entity.SubscriberEntity;
 import ru.varnavskii.nexign.enumeration.CallType;
@@ -34,6 +36,12 @@ public class CDRServiceImpl implements CDRService {
     private final SubscriberService subscriberService;
 
     @Override
+    @Transactional
+    public CDREntity createCDREntity(CDREntity cdrEntity) {
+        return cdrRepository.save(cdrEntity);
+    }
+
+    @Override
     public List<CDREntity> getAllCDRecords() {
         return cdrRepository.findAll();
     }
@@ -53,6 +61,11 @@ public class CDRServiceImpl implements CDRService {
     @Override
     public void saveAllRecords(List<CDREntity> records) {
         cdrJdbcRepository.saveAll(records);
+    }
+
+    @Override
+    public List<CDREntity> getAllCDRecordsBySubscriberId(SubscriberEntity subscriber) {
+        return cdrRepository.findAllByReceiving(subscriber);
     }
 
     @Override

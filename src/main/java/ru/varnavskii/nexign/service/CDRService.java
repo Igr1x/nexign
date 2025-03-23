@@ -6,6 +6,8 @@ import ru.varnavskii.nexign.entity.SubscriberEntity;
 import java.util.List;
 
 public interface CDRService {
+    CDREntity createCDREntity(CDREntity cdrEntity);
+
     List<CDREntity> getAllCDRecords();
 
     List<CDREntity> getCDRecordsByCallingId(int id);
@@ -15,4 +17,6 @@ public interface CDRService {
     void saveAllRecords(List<CDREntity> records);
 
     void generateCDRRecords(List<SubscriberEntity> subscribers, int recordsPerSubscriber);
+
+    List<CDREntity> getAllCDRecordsBySubscriberId(SubscriberEntity subscriber);
 }

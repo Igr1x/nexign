@@ -8,4 +8,6 @@ public interface SubscriberService {
     List<SubscriberEntity> getAllSubscribers();
 
     SubscriberEntity getSubscriberByIdOrThrowException(long id);
+
+    SubscriberEntity getSubscriberByPhoneOrThrowException(String phone);
 }

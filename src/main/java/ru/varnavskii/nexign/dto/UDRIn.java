@@ -8,8 +8,8 @@ import jakarta.validation.constraints.NotNull;
 @Getter
 public class UDRIn {
     @NotNull(message = "Subscriber id can't be null")
-    public Long subscriberId;
+    private Long subscriberId;
 
     @Nullable
-    public Integer month;
+    private Integer month;
 }
