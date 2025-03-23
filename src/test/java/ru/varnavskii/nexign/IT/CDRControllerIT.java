@@ -8,8 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import ru.varnavskii.nexign.IT.annotation.IT;
-import ru.varnavskii.nexign.entity.CDREntity;
-import ru.varnavskii.nexign.service.CDRService;
+import ru.varnavskii.nexign.repository.cdr.entity.CDREntity;
+import ru.varnavskii.nexign.service.cdr.CDRService;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -67,6 +67,7 @@ public class CDRControllerIT {
                 assertTrue(prev.getEndCall().isBefore(curr.getStartCall()));
             }
         }
-
     }
+
+
 }

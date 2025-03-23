@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import ru.varnavskii.nexign.service.SubscriberService;
+import ru.varnavskii.nexign.service.subscriber.SubscriberService;
 
 @ActiveProfiles("test")
 @SpringBootTest
