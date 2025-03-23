@@ -16,7 +16,6 @@ import ru.varnavskii.nexign.IT.subscriber.SubscriberTestUtil;
 import ru.varnavskii.nexign.controller.udr.dto.UDRIn;
 import ru.varnavskii.nexign.controller.udr.dto.UDROut;
 import ru.varnavskii.nexign.service.subscriber.SubscriberService;
-import ru.varnavskii.nexign.service.udr.UDRService;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -153,6 +152,5 @@ public class UDRIT {
 
         return String.format("%02d:%02d:%02d", hours, minutes, remainingSeconds);
     }
-
 
 }

@@ -1,8 +1,8 @@
 package ru.varnavskii.nexign.IT.cdr;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.SneakyThrows;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +93,8 @@ public class CDRIT {
     }
 
     @Test
-    public void testCreateSubscribersAndAddCDR() throws Exception {
+    @SneakyThrows
+    public void testCreateSubscribersAndAddCDR() {
         var phone1 = "+79122345678";
         var sub1 = subscriberUtil.createSubscriber(phone1);
         var phone2 = "+71345345678";
@@ -115,7 +116,8 @@ public class CDRIT {
     }
 
     @Test
-    public void testCreateCDRWithInvalidInputData() throws Exception {
+    @SneakyThrows
+    public void testCreateCDRWithInvalidSamePhoneNumber() {
         var phone1 = "+79122345678";
         var sub1 = subscriberUtil.createSubscriber(phone1);
         var callType = "01";
@@ -133,7 +135,27 @@ public class CDRIT {
     }
 
     @Test
-    public void testGenerateReportsForTwoSubscribers() throws Exception {
+    @SneakyThrows
+    public void testCreateCDRWithInvalidCallRange() {
+        var sub1 = subscriberUtil.createSubscriber("+79122345678");
+        var sub2 = subscriberUtil.createSubscriber("+79452345678");
+        var callType = "01";
+        var start = LocalDateTime.now();
+        var end = LocalDateTime.now().plusMinutes(10);
+
+        var cdrIn = new CDRIn(callType, sub1.getPhoneNumber(),
+            sub2.getPhoneNumber(), end, start);
+
+        mockMvc.perform(post(CDRTestUtil.URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(cdrIn)))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("Incorrect range set"));
+    }
+
+    @Test
+    @SneakyThrows
+    public void testGenerateReportsForTwoSubscribers() {
         var phone1 = "+79122345678";
         var sub1 = subscriberUtil.createSubscriber(phone1);
         var phone2 = "+71345345678";
@@ -174,7 +196,8 @@ public class CDRIT {
         }
     }
 
-    private String generateRepAndReturnId(Long subId, Range period) throws Exception {
+    @SneakyThrows
+    private String generateRepAndReturnId(Long subId, Range period) {
         var url = CDRTestUtil.URL + "/generateReport";
         var res1 = mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
