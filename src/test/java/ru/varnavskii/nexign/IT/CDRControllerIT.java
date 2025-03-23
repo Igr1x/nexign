@@ -8,13 +8,17 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import ru.varnavskii.nexign.IT.annotation.IT;
+import ru.varnavskii.nexign.entity.CDREntity;
 import ru.varnavskii.nexign.service.CDRService;
-import ru.varnavskii.nexign.service.SubscriberService;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -23,9 +27,6 @@ public class CDRControllerIT {
 
     @Autowired
     private CDRService cdrService;
-
-    @Autowired
-    private SubscriberService subscriberService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,13 +44,29 @@ public class CDRControllerIT {
         String requestBody = objectMapper.writeValueAsString(requestBodyMap);
 
         mockMvc.perform(post(url)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(requestBody))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
             .andExpect(status().isOk());
 
-        assertEquals(countRecords, cdrService.getAllCDRecords().size());
+        var allCDRRecords = cdrService.getAllCDRecords();
+        assertEquals(countRecords, allCDRRecords.size());
 
-        var allUsers = subscriberService.getAllSubscribers();
+        Map<Long, List<CDREntity>> callsByUser = new HashMap<>();
+        for (CDREntity cdr : allCDRRecords) {
+            callsByUser.computeIfAbsent(cdr.getCalling().getId(), k -> new ArrayList<>()).add(cdr);
+            callsByUser.computeIfAbsent(cdr.getReceiving().getId(), k -> new ArrayList<>()).add(cdr);
+        }
+
+        for (Map.Entry<Long, List<CDREntity>> entry : callsByUser.entrySet()) {
+            List<CDREntity> calls = entry.getValue();
+            calls.sort(Comparator.comparing(CDREntity::getStartCall));
+            for (int i = 1; i < calls.size(); i++) {
+                CDREntity prev = calls.get(i - 1);
+                CDREntity curr = calls.get(i);
+
+                assertTrue(prev.getEndCall().isBefore(curr.getStartCall()));
+            }
+        }
 
     }
 }
