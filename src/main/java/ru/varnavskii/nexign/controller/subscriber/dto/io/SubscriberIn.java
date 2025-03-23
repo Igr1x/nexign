@@ -6,6 +6,13 @@ import lombok.Getter;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
+/**
+ * Represents a request for creating a subscriber.
+ * <p>
+ * This class is used to store the phone number of a subscriber, ensuring that it follows
+ * the required format.
+ * </p>
+ */
 @Getter
 @Builder
 public class SubscriberIn {
