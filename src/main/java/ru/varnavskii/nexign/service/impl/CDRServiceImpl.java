@@ -12,6 +12,7 @@ import ru.varnavskii.nexign.repository.CDRJdbcRepository;
 import ru.varnavskii.nexign.repository.CDRRepository;
 import ru.varnavskii.nexign.service.CDRService;
 import ru.varnavskii.nexign.service.SubscriberService;
+import ru.varnavskii.nexign.util.Range;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -26,8 +27,6 @@ import java.util.concurrent.ThreadLocalRandom;
 @Service
 @RequiredArgsConstructor
 public class CDRServiceImpl implements CDRService {
-
-    private static final int ONE_MINUTE_IN_SEC = 3600;
 
     private static final Random random = new Random();
 
@@ -63,7 +62,6 @@ public class CDRServiceImpl implements CDRService {
         var callTypes = CallType.values();
         List<CDREntity> cdrRecords = new ArrayList<>();
         Map<SubscriberEntity, List<Range>> activeCalls = new HashMap<>();
-
         for (SubscriberEntity sub : subscribers) {
             activeCalls.put(sub, new ArrayList<>());
         }
@@ -77,18 +75,11 @@ public class CDRServiceImpl implements CDRService {
 
             Range callRange = getTimeRangeForCall(calling, receiving, activeCalls);
 
-            CDREntity cdr = CDREntity.builder()
-                .callType(callTypes[random.nextInt(callTypes.length)])
-                .calling(calling)
-                .receiving(receiving)
-                .startCall(callRange.start())
-                .endCall(callRange.end())
-                .build();
+            CDREntity cdr = createCdrRecord(calling, receiving, callRange, callTypes);
             cdrRecords.add(cdr);
 
             activeCalls.get(calling).add(callRange);
             activeCalls.get(receiving).add(callRange);
-
             activeCalls.get(calling).sort(Comparator.comparing(Range::start));
             activeCalls.get(receiving).sort(Comparator.comparing(Range::start));
         }
@@ -136,9 +127,16 @@ public class CDRServiceImpl implements CDRService {
         return start.plusSeconds(randomSeconds);
     }
 
-    private record Range(LocalDateTime start, LocalDateTime end) {
-        public boolean overlaps(Range range) {
-            return !range.end().isBefore(this.start()) && !range.start().isAfter(this.end());
-        }
+    private CDREntity createCdrRecord(SubscriberEntity calling,
+                                      SubscriberEntity receiving,
+                                      Range callRange,
+                                      CallType[] callTypes) {
+        return CDREntity.builder()
+            .callType(callTypes[random.nextInt(callTypes.length)])
+            .calling(calling)
+            .receiving(receiving)
+            .startCall(callRange.start())
+            .endCall(callRange.end())
+            .build();
     }
 }

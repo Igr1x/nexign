@@ -1,4 +1,4 @@
-package ru.varnavskii.nexign.IT.service;
+package ru.varnavskii.nexign.IT;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
