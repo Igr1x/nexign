@@ -2,7 +2,6 @@ package ru.varnavskii.nexign.service.impl;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.boot.availability.ApplicationAvailabilityBean;
 import org.springframework.stereotype.Service;
 
 import ru.varnavskii.nexign.entity.CDREntity;
@@ -33,7 +32,6 @@ public class CDRServiceImpl implements CDRService {
     private final CDRRepository cdrRepository;
     private final CDRJdbcRepository cdrJdbcRepository;
     private final SubscriberService subscriberService;
-    private final ApplicationAvailabilityBean applicationAvailability;
 
     @Override
     public List<CDREntity> getAllCDRecords() {
@@ -99,10 +97,10 @@ public class CDRServiceImpl implements CDRService {
 
         allCalls.sort(Comparator.comparing(Range::start));
 
-        return getRangeCall(allCalls);
+        return findRangeCall(allCalls);
     }
 
-    private Range getRangeCall(List<Range> ranges) {
+    private Range findRangeCall(List<Range> ranges) {
         var start = LocalDateTime.now().minusYears(1);
         var end = LocalDateTime.now().minusDays(1);
         while (true) {
