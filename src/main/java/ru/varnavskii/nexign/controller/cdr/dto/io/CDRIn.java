@@ -37,7 +37,7 @@ import jakarta.validation.constraints.Pattern;
 @Getter
 @AllArgsConstructor
 public class CDRIn {
-    private static final String PHONE_NUMBER_PATTERN = "\"^(?:\\\\+7|8)\\\\d{10}$\"";
+    private static final String PHONE_NUMBER_PATTERN = "^(?:\\+7|8)\\d{10}$";
     private static final String INVALID_PHONE_NUMBER = "Invalid phone number";
 
     @NotNull

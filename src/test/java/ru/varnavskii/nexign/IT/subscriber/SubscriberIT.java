@@ -1,4 +1,4 @@
-package ru.varnavskii.nexign.IT;
+package ru.varnavskii.nexign.IT.subscriber;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @IT
-public class SubscriberServiceIT {
+public class SubscriberIT {
 
     public static final String URL = "/subscriber";
 
@@ -34,6 +34,9 @@ public class SubscriberServiceIT {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private SubscriberTestUtil subscriberUtil;
+
     @Test
     public void testGetAll() {
         var allUsers = subscriberService.getAllSubscribers();
@@ -43,21 +46,11 @@ public class SubscriberServiceIT {
     @Test
     public void testCreateSubscriber() throws Exception {
         var phoneNumber = "+79122345678";
-        var subscriberIn = SubscriberIn.builder()
-            .phoneNumber(phoneNumber)
-            .build();
-        String requestBody = objectMapper.writeValueAsString(subscriberIn);
-
-        var res = mockMvc.perform(post(URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-            .andExpect(status().isOk())
-            .andReturn()
-            .getResponse();
-        SubscriberOut responseBody = objectMapper.readValue(res.getContentAsString(), SubscriberOut.class);
+        SubscriberOut responseBody = subscriberUtil.createSubscriber(phoneNumber);
 
         assertNotNull(responseBody.getId());
-        assertEquals(phoneNumber.replaceAll("\\+", ""), responseBody.getPhoneNumber());
+        assertEquals(phoneNumber.replaceAll("\\+", "").replaceFirst("7", "8"),
+            responseBody.getPhoneNumber());
     }
 
     @Test
@@ -74,9 +67,9 @@ public class SubscriberServiceIT {
             .andReturn()
             .getResponse()
             .getContentAsString();
-        Map<String, String> errorMap = objectMapper.readValue(errors, new TypeReference<>() {});
+        Map<String, String> errorMap = objectMapper.readValue(errors, new TypeReference<>() {
+        });
         var errorMsg = errorMap.get("phoneNumber");
         assertEquals(SubscriberIn.INVALID_PHONE_NUMBER, errorMsg);
     }
-
 }

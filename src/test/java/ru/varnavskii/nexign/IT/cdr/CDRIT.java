@@ -1,4 +1,4 @@
-package ru.varnavskii.nexign.IT;
+package ru.varnavskii.nexign.IT.cdr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -8,12 +8,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import ru.varnavskii.nexign.IT.annotation.IT;
+import ru.varnavskii.nexign.IT.subscriber.SubscriberTestUtil;
 import ru.varnavskii.nexign.common.util.Range;
+import ru.varnavskii.nexign.controller.cdr.dto.io.CDRGenerate;
 import ru.varnavskii.nexign.controller.cdr.dto.io.CDRIn;
-import ru.varnavskii.nexign.controller.cdr.dto.io.CDROut;
 import ru.varnavskii.nexign.controller.cdr.dto.io.CDRReportIn;
-import ru.varnavskii.nexign.controller.subscriber.dto.io.SubscriberIn;
-import ru.varnavskii.nexign.controller.subscriber.dto.io.SubscriberOut;
 import ru.varnavskii.nexign.repository.cdr.entity.CDREntity;
 import ru.varnavskii.nexign.service.cdr.CDRService;
 
@@ -36,9 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @IT
-public class CDRControllerIT {
-
-    public static final String URL = "/cdr";
+public class CDRIT {
     public static final String REPORTS_PATH = "reports";
 
     @Autowired
@@ -50,14 +47,21 @@ public class CDRControllerIT {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private SubscriberTestUtil subscriberUtil;
+
+    @Autowired
+    private CDRTestUtil cdrUtil;
+
     @Test
     public void testGenerateCDRRecords() throws Exception {
-        var url = URL + "/generate";
+        var url = CDRTestUtil.URL + "/generate";
         var countRecords = 10000;
 
         Map<String, String> requestBodyMap = new HashMap<>();
         requestBodyMap.put("call_count", String.valueOf(countRecords));
-        String requestBody = objectMapper.writeValueAsString(requestBodyMap);
+        var req = new CDRGenerate(countRecords);
+        String requestBody = objectMapper.writeValueAsString(req);
 
         mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -88,18 +92,20 @@ public class CDRControllerIT {
     @Test
     public void testCreateSubscribersAndAddCDR() throws Exception {
         var phone1 = "+79122345678";
-        var sub1 = createSubscriber(phone1);
+        var sub1 = subscriberUtil.createSubscriber(phone1);
         var phone2 = "+71345345678";
-        var sub2 = createSubscriber(phone2);
+        var sub2 = subscriberUtil.createSubscriber(phone2);
         var callType = "01";
         var start = LocalDateTime.now();
         var end = LocalDateTime.now().plusMinutes(10);
 
-        var cdrOut = createCDR(callType, sub1.getPhoneNumber(),
+        var cdrOut = cdrUtil.createCDR(callType, sub1.getPhoneNumber(),
             sub2.getPhoneNumber(), start, end);
 
-        assertEquals(phone1.replaceAll("\\+", ""), cdrOut.getCallingPhone());
-        assertEquals(phone2.replaceAll("\\+", ""), cdrOut.getReceivingPhone());
+        assertEquals(phone1.replaceAll("\\+", "").replaceFirst("7", "8"),
+            cdrOut.getCallingPhone());
+        assertEquals(phone2.replaceAll("\\+", "").replaceFirst("7", "8"),
+            cdrOut.getReceivingPhone());
         assertEquals(callType, cdrOut.getCallType());
         assertEquals(start, cdrOut.getStartCall());
         assertEquals(end, cdrOut.getEndCall());
@@ -108,7 +114,7 @@ public class CDRControllerIT {
     @Test
     public void testCreateCDRWithInvalidInputData() throws Exception {
         var phone1 = "+79122345678";
-        var sub1 = createSubscriber(phone1);
+        var sub1 = subscriberUtil.createSubscriber(phone1);
         var callType = "01";
         var start = LocalDateTime.now();
         var end = LocalDateTime.now().plusMinutes(10);
@@ -116,7 +122,7 @@ public class CDRControllerIT {
         var cdrIn = new CDRIn(callType, sub1.getPhoneNumber(),
             sub1.getPhoneNumber(), start, end);
 
-        mockMvc.perform(post(URL)
+        mockMvc.perform(post(CDRTestUtil.URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(cdrIn)))
             .andExpect(status().isBadRequest())
@@ -125,10 +131,10 @@ public class CDRControllerIT {
 
     @Test
     public void testGenerateReportsForTwoSubscribers() throws Exception {
-        var phone1 = "79122345678";
-        var sub1 = createSubscriber(phone1);
-        var phone2 = "71345345678";
-        var sub2 = createSubscriber(phone2);
+        var phone1 = "+79122345678";
+        var sub1 = subscriberUtil.createSubscriber(phone1);
+        var phone2 = "+71345345678";
+        var sub2 = subscriberUtil.createSubscriber(phone2);
         var callType = "01";
         var start = LocalDateTime.of(2025, 1, 1, 0, 0, 0);
         var end = LocalDateTime.of(2025, 1, 1, 0, 10, 0);
@@ -138,7 +144,7 @@ public class CDRControllerIT {
         for (int i = 0; i < 3; i++) {
             startCycle = startCycle.plusMinutes(10 * i);
             endCycle = endCycle.plusMinutes(10 * i);
-            createCDR(callType, sub1.getPhoneNumber(), sub2.getPhoneNumber(),
+            cdrUtil.createCDR(callType, sub1.getPhoneNumber(), sub2.getPhoneNumber(),
                 startCycle, endCycle);
         }
         var period1 = new Range(start.plusMinutes(10), end.plusMinutes(30));
@@ -166,7 +172,7 @@ public class CDRControllerIT {
     }
 
     private String generateRepAndReturnId(Long subId, Range period) throws Exception {
-        var url = URL + "/generateReport";
+        var url = CDRTestUtil.URL + "/generateReport";
         var res1 = mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new CDRReportIn(subId, period.start(), period.end()))))
@@ -177,35 +183,6 @@ public class CDRControllerIT {
             .getResponse()
             .getContentAsString();
         return objectMapper.readTree(res1).get("requestId").asText();
-    }
-
-    private CDROut createCDR(String callType, String incomingPhone,
-                             String outgoingPhone, LocalDateTime start,
-                             LocalDateTime end) throws Exception {
-        var cdrIn = new CDRIn(callType, incomingPhone, outgoingPhone, start, end);
-
-        var createdCdr = mockMvc.perform(post(URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(cdrIn)))
-            .andExpect(status().isOk())
-            .andReturn()
-            .getResponse();
-        return objectMapper.readValue(createdCdr.getContentAsString(), CDROut.class);
-    }
-
-    private SubscriberOut createSubscriber(String phoneNumber) throws Exception {
-        var subscriberIn = SubscriberIn.builder()
-            .phoneNumber(phoneNumber)
-            .build();
-        String requestBody = objectMapper.writeValueAsString(subscriberIn);
-
-        var res = mockMvc.perform(post(SubscriberServiceIT.URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-            .andExpect(status().isOk())
-            .andReturn()
-            .getResponse();
-        return objectMapper.readValue(res.getContentAsString(), SubscriberOut.class);
     }
 
 }

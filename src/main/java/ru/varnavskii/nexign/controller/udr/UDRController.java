@@ -29,7 +29,7 @@ public class UDRController {
         return udrService.getUDRReportForSubscriber(udrIn.getSubscriberId(), udrIn.getMonth());
     }
 
-    @PostMapping("allUsers")
+    @PostMapping("/allUsers")
     public List<UDROut> getReportForAllSubscriberByMonth(@Valid @RequestBody Map<String, String> body) {
         var month = Integer.parseInt(body.get("month"));
         return udrService.getUDRReportForAllSubscriberByMonth(month);
