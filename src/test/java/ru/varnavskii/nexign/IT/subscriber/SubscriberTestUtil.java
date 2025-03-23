@@ -2,6 +2,8 @@ package ru.varnavskii.nexign.IT.subscriber;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.SneakyThrows;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -21,7 +23,8 @@ public class SubscriberTestUtil {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public SubscriberOut createSubscriber(String phoneNumber) throws Exception {
+    @SneakyThrows
+    public SubscriberOut createSubscriber(String phoneNumber) {
         var subscriberIn = SubscriberIn.builder()
             .phoneNumber(phoneNumber)
             .build();

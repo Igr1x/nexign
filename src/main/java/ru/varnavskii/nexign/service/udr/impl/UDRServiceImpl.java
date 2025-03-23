@@ -25,8 +25,8 @@ public class UDRServiceImpl implements UDRService {
     @Transactional
     public UDROut getUDRReportForSubscriber(long subscriberId, Integer month) {
         var subscriber = subscriberService.getSubscriberByIdOrThrowException(subscriberId);
-        long incomingTotalTime = cdrJdbcRepository.findTotalIncomingCallDurationInSeconds(subscriber.getId(), month);
-        long outgoingTotalTime = cdrJdbcRepository.findTotalOutgoingCallDurationInSeconds(subscriber.getId(), month);
+        var incomingTotalTime = cdrJdbcRepository.findTotalIncomingCallDurationInSeconds(subscriber.getId(), month);
+        var outgoingTotalTime = cdrJdbcRepository.findTotalOutgoingCallDurationInSeconds(subscriber.getId(), month);
 
         String incomingFormattedTime = formatDuration(incomingTotalTime);
         String outgoingFormattedTime = formatDuration(outgoingTotalTime);
@@ -46,7 +46,10 @@ public class UDRServiceImpl implements UDRService {
         return result;
     }
 
-    private String formatDuration(long seconds) {
+    private String formatDuration(Long seconds) {
+        if (seconds == null) {
+            return "00:00:00";
+        }
         long hours = seconds / 3600;
         long minutes = (seconds % 3600) / 60;
         long remainingSeconds = seconds % 60;

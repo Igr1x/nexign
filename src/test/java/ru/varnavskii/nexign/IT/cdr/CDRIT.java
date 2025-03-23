@@ -2,6 +2,8 @@ package ru.varnavskii.nexign.IT.cdr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.SneakyThrows;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -54,7 +56,8 @@ public class CDRIT {
     private CDRTestUtil cdrUtil;
 
     @Test
-    public void testGenerateCDRRecords() throws Exception {
+    @SneakyThrows
+    public void testGenerateCDRRecords() {
         var url = CDRTestUtil.URL + "/generate";
         var countRecords = 10000;
 

@@ -3,6 +3,8 @@ package ru.varnavskii.nexign.IT.subscriber;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.SneakyThrows;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -44,7 +46,7 @@ public class SubscriberIT {
     }
 
     @Test
-    public void testCreateSubscriber() throws Exception {
+    public void testCreateSubscriber() {
         var phoneNumber = "+79122345678";
         SubscriberOut responseBody = subscriberUtil.createSubscriber(phoneNumber);
 
@@ -54,7 +56,8 @@ public class SubscriberIT {
     }
 
     @Test
-    public void testCreateSubscriberWithIncorrectPhoneNumber() throws Exception {
+    @SneakyThrows
+    public void testCreateSubscriberWithIncorrectPhoneNumber() {
         var phoneNumber = "12423432429122345678";
         var subscriberIn = SubscriberIn.builder()
             .phoneNumber(phoneNumber)

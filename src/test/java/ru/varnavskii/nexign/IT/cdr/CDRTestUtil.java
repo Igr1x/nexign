@@ -2,6 +2,8 @@ package ru.varnavskii.nexign.IT.cdr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.SneakyThrows;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -27,9 +29,10 @@ public class CDRTestUtil {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @SneakyThrows
     public CDROut createCDR(String callType, String incomingPhone,
                              String outgoingPhone, LocalDateTime start,
-                             LocalDateTime end) throws Exception {
+                             LocalDateTime end) {
         var cdrIn = new CDRIn(callType, incomingPhone, outgoingPhone, start, end);
 
         var createdCdr = mockMvc.perform(post(URL)
