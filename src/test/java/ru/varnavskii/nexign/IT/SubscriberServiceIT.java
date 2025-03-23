@@ -1,15 +1,11 @@
 package ru.varnavskii.nexign.IT;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import org.springframework.transaction.annotation.Transactional;
 
 import ru.varnavskii.nexign.IT.annotation.IT;
 import ru.varnavskii.nexign.controller.subscriber.dto.io.SubscriberIn;
@@ -23,6 +19,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @IT
 public class SubscriberServiceIT {
+
+    public static final String URL = "/subscriber";
+
     @Autowired
     private SubscriberService subscriberService;
 
@@ -40,14 +39,13 @@ public class SubscriberServiceIT {
 
     @Test
     public void testCreateSubscriber() throws Exception {
-        var url = "/subscriber";
         var phoneNumber = "+79122345678";
         var subscriberIn = SubscriberIn.builder()
             .phoneNumber(phoneNumber)
             .build();
         String requestBody = objectMapper.writeValueAsString(subscriberIn);
 
-        var res = mockMvc.perform(post(url)
+        var res = mockMvc.perform(post(URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
             .andExpect(status().isOk())

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import ru.varnavskii.nexign.common.Call;
+import ru.varnavskii.nexign.common.util.Call;
 
 @Data
 @NoArgsConstructor

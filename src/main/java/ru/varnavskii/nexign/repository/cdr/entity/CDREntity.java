@@ -5,8 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import ru.varnavskii.nexign.repository.subscriber.entity.SubscriberEntity;
 import ru.varnavskii.nexign.common.enumeration.CallType;
+import ru.varnavskii.nexign.repository.subscriber.entity.SubscriberEntity;
 
 import java.time.LocalDateTime;
 

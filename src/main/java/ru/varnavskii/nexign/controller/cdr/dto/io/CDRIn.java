@@ -1,5 +1,6 @@
 package ru.varnavskii.nexign.controller.cdr.dto.io;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,7 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 @Getter
-@Builder
+@AllArgsConstructor
 public class CDRIn {
     private static final String PHONE_NUMBER_PATTERN = "\"^(?:\\\\+7|8)\\\\d{10}$\"";
     private static final String INVALID_PHONE_NUMBER = "Invalid phone number";
@@ -30,5 +31,4 @@ public class CDRIn {
 
     @NotNull
     private LocalDateTime endCall;
-
 }

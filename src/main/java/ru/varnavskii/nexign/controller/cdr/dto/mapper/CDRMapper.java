@@ -5,11 +5,11 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Component;
 
+import ru.varnavskii.nexign.common.enumeration.CallType;
 import ru.varnavskii.nexign.controller.cdr.dto.io.CDRIn;
 import ru.varnavskii.nexign.controller.cdr.dto.io.CDROut;
 import ru.varnavskii.nexign.repository.cdr.entity.CDREntity;
 import ru.varnavskii.nexign.repository.subscriber.entity.SubscriberEntity;
-import ru.varnavskii.nexign.common.enumeration.CallType;
 import ru.varnavskii.nexign.service.subscriber.SubscriberService;
 
 @Component
@@ -46,6 +46,7 @@ public class CDRMapper {
         modelMapper.addMappings(new PropertyMap<CDREntity, CDROut>() {
             @Override
             protected void configure() {
+                using(callTypeToStrConverter).map(source.getCallType(), destination.getCallType());
                 using(phoneFromSubscriberConverter).map(source.getCalling(), destination.getCallingPhone());
                 using(phoneFromSubscriberConverter).map(source.getReceiving(), destination.getReceivingPhone());
             }
@@ -66,4 +67,7 @@ public class CDRMapper {
 
     private final Converter<SubscriberEntity, String> phoneFromSubscriberConverter = ctx ->
         ctx.getSource().getPhoneNumber();
+
+    private final Converter<CallType, String> callTypeToStrConverter = ctx ->
+        ctx.getSource().getValue();
 }

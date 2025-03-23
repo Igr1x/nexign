@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.varnavskii.nexign.common.Call;
+import ru.varnavskii.nexign.common.util.Call;
 import ru.varnavskii.nexign.controller.udr.dto.UDROut;
 import ru.varnavskii.nexign.repository.cdr.CDRJdbcRepository;
 import ru.varnavskii.nexign.service.subscriber.SubscriberService;

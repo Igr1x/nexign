@@ -13,7 +13,7 @@ import ru.varnavskii.nexign.repository.cdr.CDRJdbcRepository;
 import ru.varnavskii.nexign.repository.cdr.CDRRepository;
 import ru.varnavskii.nexign.service.cdr.CDRService;
 import ru.varnavskii.nexign.service.subscriber.SubscriberService;
-import ru.varnavskii.nexign.common.Range;
+import ru.varnavskii.nexign.common.util.Range;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

@@ -1,4 +1,4 @@
-package ru.varnavskii.nexign.common;
+package ru.varnavskii.nexign.common.util;
 
 import java.time.LocalDateTime;
 

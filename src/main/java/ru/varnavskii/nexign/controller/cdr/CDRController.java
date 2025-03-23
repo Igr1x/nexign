@@ -2,6 +2,7 @@ package ru.varnavskii.nexign.controller.cdr;
 
 import lombok.RequiredArgsConstructor;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.varnavskii.nexign.controller.cdr.dto.io.CDRIn;
 import ru.varnavskii.nexign.controller.cdr.dto.io.CDROut;
 import ru.varnavskii.nexign.controller.cdr.dto.mapper.CDRMapper;
+import ru.varnavskii.nexign.controller.cdr.validator.CDRValidator;
 import ru.varnavskii.nexign.service.cdr.CDRService;
 import ru.varnavskii.nexign.service.subscriber.SubscriberService;
 
@@ -28,6 +30,7 @@ public class CDRController {
     private final CDRService cdrService;
     private final SubscriberService subscriberService;
     private final CDRMapper cdrMapper;
+    private final CDRValidator cdrValidator;
 
     @PostMapping(value = "/generate")
     public ResponseEntity<String> generateCDR(@RequestBody Map<String, String> body) {
@@ -38,7 +41,8 @@ public class CDRController {
     }
 
     @PostMapping
-    public CDROut createCDR(@RequestBody CDRIn cdrIn) {
+    public CDROut createCDR(@RequestBody CDRIn cdrIn) throws BadRequestException {
+        cdrValidator.checkValidRecord(cdrIn);
         var cdr = cdrService.createCDREntity(cdrMapper.toEntity(cdrIn));
         return cdrMapper.toOut(cdr);
     }
