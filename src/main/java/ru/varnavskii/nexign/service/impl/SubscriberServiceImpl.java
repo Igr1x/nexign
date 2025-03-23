@@ -1,9 +1,8 @@
 package ru.varnavskii.nexign.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
-
 import ru.varnavskii.nexign.entity.SubscriberEntity;
 import ru.varnavskii.nexign.repository.SubscriberRepository;
 import ru.varnavskii.nexign.service.SubscriberService;
@@ -19,5 +18,11 @@ public class SubscriberServiceImpl implements SubscriberService {
     @Override
     public List<SubscriberEntity> getAllSubscribers() {
         return subscriberRepository.findAll();
+    }
+
+    @Override
+    public SubscriberEntity getSubscriberByIdOrThrowException(long id) {
+        return subscriberRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Subscriber with id " + id + " not found"));
     }
 }
