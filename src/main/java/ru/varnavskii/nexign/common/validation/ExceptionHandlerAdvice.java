@@ -4,15 +4,18 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import ru.varnavskii.nexign.common.exception.FileException;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@ControllerAdvice
+import io.swagger.v3.oas.annotations.Hidden;
+
+@RestControllerAdvice
+@Hidden
 public class ExceptionHandlerAdvice {
 
     @ExceptionHandler(BadRequestException.class)
