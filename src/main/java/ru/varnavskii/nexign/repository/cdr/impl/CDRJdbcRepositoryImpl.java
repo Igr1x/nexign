@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import ru.varnavskii.nexign.repository.cdr.entity.CDREntity;
+import ru.varnavskii.nexign.common.util.Range;
 import ru.varnavskii.nexign.repository.cdr.CDRJdbcRepository;
+import ru.varnavskii.nexign.repository.cdr.CDRRepository;
+import ru.varnavskii.nexign.repository.cdr.entity.CDREntity;
 
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
@@ -15,6 +17,8 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 public class CDRJdbcRepositoryImpl implements CDRJdbcRepository {
+
+    private final CDRRepository cdrRepository;
 
     private final static String INSERT_CDR_RECORD_SQL = """
         INSERT INTO cdr (call_type, calling, receiving, start_call, end_call)
@@ -33,6 +37,16 @@ public class CDRJdbcRepositoryImpl implements CDRJdbcRepository {
         FROM cdr
         WHERE (? IS NULL OR EXTRACT(MONTH FROM start_call) = ?)
         AND calling = ?
+        """;
+
+    private final static String CHECK_OVERLAPPING_CALL_TIME_INTERVAL = """
+        SELECT EXISTS (
+            SELECT 1
+            FROM cdr
+            WHERE (calling IN (?, ?) OR receiving IN (?, ?))
+              AND start_call <= ?
+              AND end_call >= ?
+        );
         """;
 
     private final JdbcTemplate jdbcTemplate;
@@ -59,5 +73,13 @@ public class CDRJdbcRepositoryImpl implements CDRJdbcRepository {
     @Override
     public Long findTotalOutgoingCallDurationInSeconds(Long subscriptionId, Integer month) {
         return jdbcTemplate.queryForObject(TOTAL_OUTGOING_SQL, Long.class, month, month, subscriptionId);
+    }
+
+    @Override
+    public boolean hasOverlappingCDR(long callingId, long receivingId, Range range) {
+        var result = jdbcTemplate.queryForObject(CHECK_OVERLAPPING_CALL_TIME_INTERVAL, Boolean.class,
+            callingId, receivingId, callingId, receivingId,
+            range.end(), range.start());
+        return Boolean.TRUE.equals(result);
     }
 }

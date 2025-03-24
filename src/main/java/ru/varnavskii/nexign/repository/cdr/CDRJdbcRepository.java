@@ -1,5 +1,6 @@
 package ru.varnavskii.nexign.repository.cdr;
 
+import ru.varnavskii.nexign.common.util.Range;
 import ru.varnavskii.nexign.repository.cdr.entity.CDREntity;
 
 import java.util.List;
@@ -47,4 +48,22 @@ public interface CDRJdbcRepository {
      * are found, 0 is returned.
      */
     Long findTotalOutgoingCallDurationInSeconds(Long subscriptionId, Integer month);
+
+    /**
+     * Checks whether a given call duration range overlaps with any existing CDR records
+     * for a specific pair of calling and receiving phone numbers.
+     *
+     * <p>
+     * This method verifies if the provided time range for a call intersects with any existing
+     * CDR records associated with the given {@code callingPhone} and {@code receivingPhone}.
+     * If an overlap is found, the method returns {@code true}, indicating that a conflict exists.
+     * Otherwise, it returns {@code false}.
+     * </p>
+     *
+     * @param callingId   The id of the caller.
+     * @param receivingId The id of the recipient.
+     * @param range          The time range (start and end) of the call to be checked for overlap.
+     * @return {@code true} if the specified range overlaps with an existing CDR record, otherwise {@code false}.
+     */
+    boolean hasOverlappingCDR(long callingId, long receivingId, Range range);
 }
