@@ -117,6 +117,29 @@ public class CDRIT {
 
     @Test
     @SneakyThrows
+    public void testCreateSubscribersAndTryAddCDRWithOverlapsCallTimeRange() {
+        var phone1 = "+79122345678";
+        var sub1 = subscriberUtil.createSubscriber(phone1);
+        var phone2 = "+71345345678";
+        var sub2 = subscriberUtil.createSubscriber(phone2);
+        var callType = "01";
+        var start = LocalDateTime.now();
+        var end = LocalDateTime.now().plusMinutes(10);
+        cdrUtil.createCDR(callType, sub1.getPhoneNumber(),
+            sub2.getPhoneNumber(), start, end);
+
+
+        var cdrIn = new CDRIn(callType, sub1.getPhoneNumber(),
+            sub2.getPhoneNumber(), start.plusMinutes(5), end);
+        mockMvc.perform(post(CDRTestUtil.URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(cdrIn)))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("Call time range overlaps with an existing record"));
+    }
+
+    @Test
+    @SneakyThrows
     public void testCreateCDRWithInvalidSamePhoneNumber() {
         var phone1 = "+79122345678";
         var sub1 = subscriberUtil.createSubscriber(phone1);
@@ -167,13 +190,13 @@ public class CDRIT {
         var startCycle = start;
         var endCycle = end;
         for (int i = 0; i < 3; i++) {
-            startCycle = startCycle.plusMinutes(10 * i);
-            endCycle = endCycle.plusMinutes(10 * i);
+            startCycle = startCycle.plusMinutes(11 * i);
+            endCycle = endCycle.plusMinutes(11 * i);
             cdrUtil.createCDR(callType, sub1.getPhoneNumber(), sub2.getPhoneNumber(),
                 startCycle, endCycle);
         }
-        var period1 = new Range(start.plusMinutes(10), end.plusMinutes(30));
-        var period2 = new Range(start, start.plusMinutes(20));
+        var period1 = new Range(start.plusMinutes(11), end.plusMinutes(33));
+        var period2 = new Range(start, start.plusMinutes(21));
 
         var requestId1 = generateRepAndReturnId(sub1.getId(), period1);
         var requestId2 = generateRepAndReturnId(sub2.getId(), period2);

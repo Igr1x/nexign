@@ -73,6 +73,11 @@ public class CDRServiceImpl implements CDRService {
     }
 
     @Override
+    public boolean checkHasOverlappingCDRRecords(long callingId, long receivingId, Range range) {
+        return cdrJdbcRepository.hasOverlappingCDR(callingId, receivingId, range);
+    }
+
+    @Override
     public void generateReport(UUID reportId, SubscriberEntity subscriber, Range period) {
         var allCdrRecordsForSubscriber = getAllCDRRecordsInPeriodBySubscriberId(subscriber, period);
         allCdrRecordsForSubscriber.sort(Comparator.comparing(CDREntity::getStartCall));

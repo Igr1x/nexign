@@ -101,7 +101,7 @@ public class UDRIT {
         cdrTestUtil.createCDR("01", sub1.getPhoneNumber(),
             sub2.getPhoneNumber(), start, end);
         cdrTestUtil.createCDR("02", sub2.getPhoneNumber(),
-            sub1.getPhoneNumber(), start.plusMinutes(10), end.plusMinutes(10));
+            sub1.getPhoneNumber(), start.plusMinutes(11), end.plusMinutes(11));
 
         var udrIn = new UDRIn(sub1.getId(), currentMonth);
         var response = mockMvc.perform(post(URL + USER_URL)

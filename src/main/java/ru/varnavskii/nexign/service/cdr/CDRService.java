@@ -67,4 +67,9 @@ public interface CDRService {
      * @return A list of CDR records for the specified subscriber and period.
      */
     List<CDREntity> getAllCDRRecordsInPeriodBySubscriberId(SubscriberEntity subscriber, Range period);
+
+    /**
+     * Method for check time call range overlaps with any exiting CDR records
+     */
+    boolean checkHasOverlappingCDRRecords(long callingId, long receivingId, Range range);
 }
